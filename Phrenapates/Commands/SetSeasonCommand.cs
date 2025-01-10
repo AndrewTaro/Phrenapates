@@ -3,12 +3,12 @@ using Phrenapates.Services.Irc;
 
 namespace Phrenapates.Commands
 {
-    [CommandHandler("setseason", "Set season of content (raid, timeattackdungeon, eliminateraid, arena, multifloorraid)", "/setseason <raid|timeattackdungeon|eliminateraid|arena|multifloorraid> <seasonid>")]
+    [CommandHandler("setseason", "Set season of content (raid, timeattackdungeon, eliminateraid)", "/setseason <raid|timeattackdungeon|eliminateraid> <seasonid>")]
     internal class SetSeason : Command
     {
         public SetSeason(IrcConnection connection, string[] args, bool validate = true) : base(connection, args, validate) { }
 
-        [Argument(0, @"", "Target content name (raid, timeattackdungeon, eliminateraid, arena, multifloorraid)", ArgumentFlags.IgnoreCase)]
+        [Argument(0, @"", "Target content name (raid, timeattackdungeon, eliminateraid)", ArgumentFlags.IgnoreCase)]
         public string target { get; set; } = string.Empty;
 
         [Argument(1, @"^[0-9]", "Target season id", ArgumentFlags.IgnoreCase)]
@@ -94,52 +94,6 @@ namespace Phrenapates.Commands
                         connection.SendChatMessage($"Grand Assault ID: {eliminateRaidSeason.SeasonId}");
                         connection.SendChatMessage($"Grand Assault StartTime: {eliminateRaidSeason.SeasonStartData}");
                         connection.SendChatMessage($"Grand Assault Raid is set to {seasonId}");
-                        connection.Context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
-                        connection.Context.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Invalid Value");
-                    }
-                    break;
-                case "arena":
-                    if (long.TryParse(value, out seasonId))
-                    {
-                        var arenaSeason = connection.ExcelTableService.GetTable<ArenaSeasonExcelTable>().UnPack().DataList.FirstOrDefault(x => x.UniqueId == seasonId);
-                        if(arenaSeason == null) 
-                        {
-                            connection.SendChatMessage("Season ID does not exist");
-                            throw new ArgumentException("Invalid Value"); 
-                        }
-                        connection.Account.ContentInfo.ArenaDataInfo.SeasonId = seasonId;
-
-                        connection.SendChatMessage($"Tactical Challenge ID: {arenaSeason.UniqueId}");
-                        connection.SendChatMessage($"Tactical Challenge StartTime: {arenaSeason.SeasonStartDate}");
-                        connection.SendChatMessage($"Tactical Challenge is set to {seasonId}");
-                        connection.Context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
-                        connection.Context.SaveChanges();
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Invalid Value");
-                    }
-                    break;
-                case "multifloorraid":
-                    if (long.TryParse(value, out seasonId))
-                    {
-                        var multiFloorRaidSeason = connection.ExcelTableService.GetExcelDB<MultiFloorRaidSeasonManageExcel>();
-                        var multiFloorRaidData = multiFloorRaidSeason.FirstOrDefault(x => x.SeasonId == seasonId);
-                        if(!multiFloorRaidSeason.Any(x => x.SeasonId == seasonId))
-                        {
-                            connection.SendChatMessage("Season ID does not exist");
-                            throw new ArgumentException("Invalid Value"); 
-                        }
-                        connection.Account.ContentInfo.MultiFloorRaidDataInfo.SeasonId = seasonId;
-
-                        connection.SendChatMessage($"Final Restriction Boss: {multiFloorRaidData.OpenRaidBossGroupId}");
-                        connection.SendChatMessage($"Final Restriction ID: {multiFloorRaidData.SeasonId}");
-                        connection.SendChatMessage($"Final Restriction StartTime: {multiFloorRaidData.SeasonStartDate}");
-                        connection.SendChatMessage($"Final Restriction is set to {seasonId}");
                         connection.Context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
                         connection.Context.SaveChanges();
                     }

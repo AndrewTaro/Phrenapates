@@ -19,7 +19,7 @@ namespace Phrenapates.Managers
         
         public DateTime CreateServerTime(TimeAttackDungeonSeasonManageExcelT targetSeason, ContentInfo contentInfo)
         {
-            if (OverrideServerTimeTicks == null || SeasonId != contentInfo.TimeAttackDungeonDataInfo.SeasonId)
+            if (OverrideServerTimeTicks == default || SeasonId != contentInfo.TimeAttackDungeonDataInfo.SeasonId)
             {
                 OverrideServerTimeTicks = DateTime.Parse(targetSeason.StartDate);
                 SeasonId = contentInfo.TimeAttackDungeonDataInfo.SeasonId;

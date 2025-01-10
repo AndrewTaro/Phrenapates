@@ -20,7 +20,7 @@ namespace Phrenapates.Managers
 
         public DateTime CreateServerTime(RaidSeasonManageExcelT targetSeason, ContentInfo contentInfo)
         {
-            if (OverrideServerTimeTicks == null || SeasonId != contentInfo.RaidDataInfo.SeasonId)
+            if (OverrideServerTimeTicks == default || SeasonId != contentInfo.RaidDataInfo.SeasonId)
             {
                 OverrideServerTimeTicks = DateTime.Parse(targetSeason.SeasonStartData);
                 SeasonId = contentInfo.RaidDataInfo.SeasonId;
