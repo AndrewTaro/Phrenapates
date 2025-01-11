@@ -1,6 +1,7 @@
 ﻿using Phrenapates.Services;
 using Plana.Database;
 using Plana.Database.ModelExtensions;
+using Plana.FlatData;
 using Plana.MX.GameLogic.DBModel;
 using Plana.MX.NetworkProtocol;
 
@@ -76,28 +77,48 @@ namespace Phrenapates.Controllers.Api.ProtocolHandlers
         public ResponsePacket Equipment_BatchGrowthHandler(EquipmentBatchGrowthRequest req)
         {
             var account = sessionKeyService.GetAccount(req.SessionKey);
-            var upgradedEquipment = new List<EquipmentDB>();
+            var packetData = new EquipmentBatchGrowthResponse();
 
-            foreach (var batchGrowthDB in req.EquipmentBatchGrowthRequestDBs)
+            if (req.EquipmentBatchGrowthRequestDBs.Count != 0)
             {
-                var targetEquipment = account.Equipment.FirstOrDefault(x => x.ServerId == batchGrowthDB.TargetServerId);
+                var upgradedEquipment = new List<EquipmentDB>();
+                foreach (var batchGrowthDB in req.EquipmentBatchGrowthRequestDBs)
+                {
+                    var targetEquipment = account.Equipment.FirstOrDefault(x => x.ServerId == batchGrowthDB.TargetServerId);
 
-                targetEquipment.Tier = (int)batchGrowthDB.AfterTier;
-                targetEquipment.Level = (int)batchGrowthDB.AfterLevel;
-                targetEquipment.UniqueId = targetEquipment.UniqueId + batchGrowthDB.AfterTier - 1; // should prob use excel, im lazyzz...
-                targetEquipment.IsNew = true;
-                targetEquipment.StackCount = 1;
+                    targetEquipment.Tier = (int)batchGrowthDB.AfterTier;
+                    targetEquipment.Level = (int)batchGrowthDB.AfterLevel;
+                    targetEquipment.UniqueId = targetEquipment.UniqueId + batchGrowthDB.AfterTier - 1; // should prob use excel, im lazyzz...
+                    targetEquipment.IsNew = true;
+                    targetEquipment.StackCount = 1;
 
+                    context.SaveChanges();
+                    upgradedEquipment.Add(targetEquipment);    
+                }
+                packetData.EquipmentDBs = upgradedEquipment;
+            }
+
+            if (req.GearTierUpRequestDB.TargetServerId != null)
+            {
+                var gearExcelTable = excelTableService.GetExcelDB<CharacterGearExcel>();
+                var targetGear = account.Gears.FirstOrDefault(x => x.ServerId == req.GearTierUpRequestDB.TargetServerId);
+                var targetCharacter = account.Characters.FirstOrDefault(x => x.ServerId == targetGear.BoundCharacterServerId);
+                
+                var gearId = gearExcelTable.FirstOrDefault(x => 
+                    x.CharacterId == targetCharacter.UniqueId &&
+                    x.Tier == 2
+                ).Id;
+
+                targetGear.UniqueId = gearId;
+                targetGear.Tier = 2;
+                
                 context.SaveChanges();
-                upgradedEquipment.Add(targetEquipment);
+                packetData.GearDB = targetGear;
             }
 
             context.SaveChanges();
             
-            return new EquipmentBatchGrowthResponse()
-            {
-                EquipmentDBs = upgradedEquipment,
-            };
+            return packetData;
         }
 
     }

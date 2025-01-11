@@ -61,8 +61,8 @@ namespace Phrenapates.Controllers.Api.ProtocolHandlers
             var account = sessionKeyService.GetAccount(req.SessionKey);
 
             var gearExcelTable = excelTableService.GetExcelDB<CharacterGearExcel>();
-            var targetGear = context.Gears.FirstOrDefault(x => x.ServerId == req.GearServerId);
-            var targetCharacter = context.Characters.FirstOrDefault(x => x.ServerId == targetGear.BoundCharacterServerId);
+            var targetGear = account.Gears.FirstOrDefault(x => x.ServerId == req.GearServerId);
+            var targetCharacter = account.Characters.FirstOrDefault(x => x.ServerId == targetGear.BoundCharacterServerId);
             
             var gearId = gearExcelTable.FirstOrDefault(x => 
                 x.CharacterId == targetCharacter.UniqueId &&
