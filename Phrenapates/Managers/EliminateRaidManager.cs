@@ -46,9 +46,9 @@ namespace Phrenapates.Managers
                     OpenedBossGroups = [],
                     PlayableHighestDifficulty = new()
                     {
-                        { targetSeasonData.OpenRaidBossGroup01, Difficulty.Torment },
-                        { targetSeasonData.OpenRaidBossGroup02, Difficulty.Torment },
-                        { targetSeasonData.OpenRaidBossGroup03, Difficulty.Torment }
+                        { targetSeasonData.OpenRaidBossGroup01, Difficulty.Lunatic },
+                        { targetSeasonData.OpenRaidBossGroup02, Difficulty.Lunatic },
+                        { targetSeasonData.OpenRaidBossGroup03, Difficulty.Lunatic }
                     },
                     SweepPointByRaidUniqueId = [],
                     SeasonStartDate = OverrideServerTimeTicks.AddHours(-1),
