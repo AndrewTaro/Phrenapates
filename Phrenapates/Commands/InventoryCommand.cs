@@ -23,7 +23,7 @@ namespace Phrenapates.Commands
             if (!optionList.Contains(options) && options.Length > 0)
             {
                 connection.SendChatMessage("Unknown options!");
-                connection.SendChatMessage("Usage: /inventory addall ue50");
+                connection.SendChatMessage("Usage: /inventory addall max");
                 return;
             }
 
@@ -52,6 +52,10 @@ namespace Phrenapates.Commands
                     InventoryUtils.RemoveAllFurnitures(connection);
 
                     connection.SendChatMessage("Removed Everything!");
+                    break;
+                default:
+                    connection.SendChatMessage("Unknown operation!");
+                    connection.SendChatMessage("Usage: /inventory addall max");
                     break;
             }
 

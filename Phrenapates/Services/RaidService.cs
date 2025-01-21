@@ -68,7 +68,8 @@ namespace Phrenapates.Services
                 { "Chesed", new[] { (1f, 1) } },
                 { "Hieronymus", new[] { (0.5f, 1) } },
                 { "Goz", new[] { (0.6f, 1) } },
-                { "EN0006", new[] { (0.75f, 1), (0.1f, 2) } }
+                { "EN0006", new[] { (0.75f, 1), (0.1f, 2) } },
+                { "EN0010", new[] { (0.6f, 1) } },
             };
 
             if (hpThresholds.TryGetValue(bossName, out var thresholds))
