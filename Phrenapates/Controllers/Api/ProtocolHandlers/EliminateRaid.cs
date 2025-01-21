@@ -32,7 +32,7 @@ namespace Phrenapates.Controllers.Api.ProtocolHandlers
 
             var raidSeasonExcel = excelTableService.GetTable<EliminateRaidSeasonManageExcelTable>().UnPack().DataList;
             var targetSeason = raidSeasonExcel.FirstOrDefault(x => x.SeasonId == account.ContentInfo.EliminateRaidDataInfo.SeasonId);
-            if(EliminateRaidManager.Instance.SeasonId == null || EliminateRaidManager.Instance.SeasonId != account.ContentInfo.EliminateRaidDataInfo.SeasonId)
+            if(EliminateRaidManager.Instance.RaidBattleDB == null)
             {
                 account.ContentInfo.EliminateRaidDataInfo.TimeBonus = 0;
                 context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
@@ -115,6 +115,8 @@ namespace Phrenapates.Controllers.Api.ProtocolHandlers
             if (!isCleared)
             {
                 account.ContentInfo.EliminateRaidDataInfo.TimeBonus += req.Summary.EndFrame;
+                context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
+                context.SaveChanges();
                 return new EliminateRaidEndBattleResponse()
                 {
                     ServerTimeTicks = EliminateRaidManager.Instance.GetServerTime().Ticks
@@ -178,6 +180,10 @@ namespace Phrenapates.Controllers.Api.ProtocolHandlers
                 RankingPoint = account.ContentInfo.EliminateRaidDataInfo.TotalRankingPoint,
                 BestRankingPoint = account.ContentInfo.EliminateRaidDataInfo.BestRankingPoint
             };
+
+            account.ContentInfo.EliminateRaidDataInfo.TimeBonus = 0;
+            context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
+            context.SaveChanges();
 
             EliminateRaidManager.Instance.ClearBossData();
 

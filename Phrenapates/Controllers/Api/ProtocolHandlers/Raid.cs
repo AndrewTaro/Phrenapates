@@ -33,7 +33,7 @@ namespace Phrenapates.Controllers.Api.ProtocolHandlers
 
             var raidSeasonExcel = excelTableService.GetTable<RaidSeasonManageExcelTable>().UnPack().DataList;
             var targetSeason = raidSeasonExcel.FirstOrDefault(x => x.SeasonId == account.ContentInfo.RaidDataInfo.SeasonId);
-            if(RaidManager.Instance.SeasonId == null || RaidManager.Instance.SeasonId != account.ContentInfo.RaidDataInfo.TimeBonus)
+            if(RaidManager.Instance.RaidBattleDB == null)
             {
                 account.ContentInfo.RaidDataInfo.TimeBonus = 0;
                 context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
@@ -117,6 +117,8 @@ namespace Phrenapates.Controllers.Api.ProtocolHandlers
             if (!isCleared)
             {
                 account.ContentInfo.RaidDataInfo.TimeBonus += req.Summary.EndFrame;
+                context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
+                context.SaveChanges();
                 return new RaidEndBattleResponse()
                 {
                     ServerTimeTicks = RaidManager.Instance.GetServerTime().Ticks
@@ -164,6 +166,10 @@ namespace Phrenapates.Controllers.Api.ProtocolHandlers
             };
 
             RaidManager.Instance.ClearBossData();
+
+            account.ContentInfo.RaidDataInfo.TimeBonus = 0;
+            context.Entry(account).Property(x => x.ContentInfo).IsModified = true;
+            context.SaveChanges();
 
             return new RaidGiveUpResponse()
             {

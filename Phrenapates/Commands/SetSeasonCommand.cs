@@ -31,6 +31,7 @@ namespace Phrenapates.Commands
                             throw new ArgumentException("Invalid Value"); 
                         }    
                         connection.Account.ContentInfo.RaidDataInfo.SeasonId = seasonId;
+                        connection.Account.ContentInfo.RaidDataInfo.TimeBonus = 0;
                         connection.Account.ContentInfo.RaidDataInfo.BestRankingPoint = 0;
                         connection.Account.ContentInfo.RaidDataInfo.TotalRankingPoint = 0;
 
@@ -82,6 +83,7 @@ namespace Phrenapates.Commands
                         } 
 
                         connection.Account.ContentInfo.EliminateRaidDataInfo.SeasonId = seasonId;
+                        connection.Account.ContentInfo.EliminateRaidDataInfo.TimeBonus = 0;
                         connection.Account.ContentInfo.EliminateRaidDataInfo.BestRankingPoint = 0;
                         connection.Account.ContentInfo.EliminateRaidDataInfo.TotalRankingPoint = 0;
                         
